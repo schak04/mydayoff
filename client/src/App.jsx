@@ -27,6 +27,30 @@ function App() {
                         </ProtectedRoute>
                     } />
 
+                    <Route path="/employee" element={
+                        <ProtectedRoute roles={['Employee']}>
+                            <Layout>
+                                <Dashboard />
+                            </Layout>
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/manager" element={
+                        <ProtectedRoute roles={['Manager']}>
+                            <Layout>
+                                <Dashboard />
+                            </Layout>
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/admin" element={
+                        <ProtectedRoute roles={['Admin']}>
+                            <Layout>
+                                <AdminPanel />
+                            </Layout>
+                        </ProtectedRoute>
+                    } />
+
                     <Route path="/my-leaves" element={
                         <ProtectedRoute>
                             <Layout>
@@ -39,14 +63,6 @@ function App() {
                         <ProtectedRoute roles={['Manager', 'Admin']}>
                             <Layout>
                                 <TeamRequests />
-                            </Layout>
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/admin" element={
-                        <ProtectedRoute roles={['Admin']}>
-                            <Layout>
-                                <AdminPanel />
                             </Layout>
                         </ProtectedRoute>
                     } />

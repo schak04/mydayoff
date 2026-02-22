@@ -74,7 +74,7 @@ const MyLeaves = () => {
             case 'Rejected':
                 return <span className="flex items-center space-x-1 text-red-600 bg-red-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><XCircle size={14} /> <span>Rejected</span></span>;
             default:
-                return <span className="flex items-center space-x-1 text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><Clock size={14} /> <span>Pending</span></span>;
+                return <span className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><Clock size={14} /> <span>Pending</span></span>;
         }
     };
 
@@ -82,9 +82,9 @@ const MyLeaves = () => {
         <div className="space-y-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-1">
-                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm sticky top-24">
-                        <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center space-x-2">
-                            <Calendar className="text-primary-600" />
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm sticky top-24 transition-colors duration-300">
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center space-x-2">
+                            <Calendar className="text-primary-600 dark:text-primary-400" />
                             <span>Apply for Leave</span>
                         </h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,34 +96,34 @@ const MyLeaves = () => {
                             )}
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Start Date</label>
                                     <input
                                         type="date"
                                         name="startDate"
                                         required
                                         value={formData.startDate}
                                         onChange={handleChange}
-                                        className="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="block w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">End Date</label>
                                     <input
                                         type="date"
                                         name="endDate"
                                         required
                                         value={formData.endDate}
                                         onChange={handleChange}
-                                        className="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="block w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Leave Type</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Leave Type</label>
                                     <select
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="block w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                                     >
                                         <option>Sick</option>
                                         <option>Casual</option>
@@ -134,14 +134,14 @@ const MyLeaves = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Reason</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Reason</label>
                                     <textarea
                                         name="reason"
                                         required
                                         value={formData.reason}
                                         onChange={handleChange}
                                         rows="3"
-                                        className="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="block w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                                         placeholder="Briefly explain your reason..."
                                     />
                                 </div>
@@ -152,9 +152,9 @@ const MyLeaves = () => {
                                         name="halfDay"
                                         checked={formData.halfDay}
                                         onChange={handleChange}
-                                        className="h-4 w-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500"
+                                        className="h-4 w-4 text-primary-600 dark:text-primary-400 border-slate-300 dark:border-slate-700 rounded focus:ring-primary-500 bg-white dark:bg-slate-800"
                                     />
-                                    <label htmlFor="halfDay" className="ml-2 block text-sm text-slate-700">
+                                    <label htmlFor="halfDay" className="ml-2 block text-sm text-slate-700 dark:text-slate-300">
                                         Half-day request
                                     </label>
                                 </div>
@@ -162,7 +162,7 @@ const MyLeaves = () => {
                             <button
                                 type="submit"
                                 disabled={formLoading}
-                                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2.5 rounded-lg transition-all disabled:opacity-50"
+                                className="w-full bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 text-white font-bold py-2.5 rounded-lg transition-all disabled:opacity-50 shadow-lg shadow-primary-500/20"
                             >
                                 {formLoading ? 'Submitting...' : 'Submit Request'}
                             </button>
@@ -171,7 +171,7 @@ const MyLeaves = () => {
                 </div>
 
                 <div className="lg:col-span-2">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center space-x-2">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center space-x-2">
                         <span>My Leave History</span>
                     </h2>
                     {loading ? (
@@ -181,29 +181,29 @@ const MyLeaves = () => {
                             No leave requests found.
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
-                                    <thead className="bg-slate-50 border-b border-slate-100">
+                                    <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                                         <tr>
-                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Type / Reason</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Dates</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type / Reason</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dates</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100">
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                                         {leaves.map((leave) => (
                                             <tr key={leave._id} className="hover:bg-slate-50 transition-colors">
                                                 <td className="px-6 py-4">
-                                                    <p className="font-semibold text-slate-900">{leave.type}</p>
-                                                    <p className="text-sm text-slate-500 truncate max-w-[200px]" title={leave.reason}>{leave.reason}</p>
+                                                    <p className="font-semibold text-slate-900 dark:text-white">{leave.type}</p>
+                                                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate max-w-[200px]" title={leave.reason}>{leave.reason}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="text-sm text-slate-700">
+                                                    <p className="text-sm text-slate-700 dark:text-slate-300">
                                                         {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                                                     </p>
-                                                    {leave.halfDay && <span className="text-xs text-primary-500 font-medium tracking-tight">Half Day</span>}
+                                                    {leave.halfDay && <span className="text-xs text-primary-500 dark:text-primary-400 font-medium tracking-tight">Half Day</span>}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {getStatusBadge(leave.status)}
@@ -212,7 +212,7 @@ const MyLeaves = () => {
                                                     {leave.status === 'Pending' && (
                                                         <button
                                                             onClick={() => cancelLeave(leave._id)}
-                                                            className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all"
+                                                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                                             title="Cancel Request"
                                                         >
                                                             <Trash2 size={18} />

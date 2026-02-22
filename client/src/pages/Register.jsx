@@ -24,8 +24,10 @@ const Register = () => {
         setError('');
         setLoading(true);
         try {
-            await register(formData);
-            navigate('/');
+            const user = await register(formData);
+            if (user.role === 'Admin') navigate('/admin');
+            else if (user.role === 'Manager') navigate('/manager');
+            else navigate('/employee');
         } catch (err) {
             setError(err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || 'Registration failed');
         } finally {

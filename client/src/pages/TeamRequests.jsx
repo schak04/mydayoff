@@ -67,18 +67,18 @@ const TeamRequests = () => {
             case 'Rejected':
                 return <span className="flex items-center space-x-1 text-red-600 bg-red-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><XCircle size={14} /> <span>Rejected</span></span>;
             default:
-                return <span className="flex items-center space-x-1 text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><Clock size={14} /> <span>Pending</span></span>;
+                return <span className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><Clock size={14} /> <span>Pending</span></span>;
         }
     };
 
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">Team Requests</h1>
-                <p className="text-slate-500 mt-1">Review and manage leave requests from your team members.</p>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white transition-colors">Team Requests</h1>
+                <p className="text-slate-500 dark:text-slate-400 mt-1 transition-colors">Review and manage leave requests from your team members.</p>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-300">
                 <div className="relative w-full md:w-96">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                         <Search size={18} />
@@ -88,18 +88,18 @@ const TeamRequests = () => {
                         placeholder="Search by name, type, or reason..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm"
+                        className="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                     />
                 </div>
                 <div className="flex items-center space-x-4 w-full md:w-auto">
-                    <div className="flex items-center space-x-2 text-sm text-slate-500 font-medium whitespace-nowrap">
+                    <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
                         <Filter size={16} />
                         <span>Filter:</span>
                     </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="block w-full md:w-40 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm"
+                        className="block w-full md:w-40 px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                     >
                         <option>All</option>
                         <option>Pending</option>
@@ -112,35 +112,35 @@ const TeamRequests = () => {
             {loading ? (
                 <div className="text-center py-20 text-slate-500">Loading team requests...</div>
             ) : filteredRequests.length === 0 ? (
-                <div className="bg-white p-20 rounded-2xl border border-dashed border-slate-200 text-center text-slate-500">
+                <div className="bg-white dark:bg-slate-900 p-20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-500 dark:text-slate-400 transition-colors duration-300">
                     No matching leave requests found.
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-slate-50 border-b border-slate-100">
+                            <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                                 <tr>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Leave Details</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Decision / Actions</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Employee</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Leave Details</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Decision / Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 text-sm">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
                                 {filteredRequests.map((req) => (
-                                    <tr key={req._id} className="hover:bg-slate-50 transition-colors">
+                                    <tr key={req._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <td className="px-6 py-4">
-                                            <p className="font-bold text-slate-900">{req.employeeId.name}</p>
-                                            <p className="text-slate-500 text-xs">{req.employeeId.email}</p>
+                                            <p className="font-bold text-slate-900 dark:text-white">{req.employeeId.name}</p>
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs">{req.employeeId.email}</p>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center space-x-2 mb-1">
-                                                <span className="font-semibold text-slate-800">{req.type}</span>
-                                                {req.halfDay && <span className="text-[10px] bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded font-bold uppercase">Half Day</span>}
+                                                <span className="font-semibold text-slate-800 dark:text-slate-200">{req.type}</span>
+                                                {req.halfDay && <span className="text-[10px] bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 px-1.5 py-0.5 rounded font-bold uppercase">Half Day</span>}
                                             </div>
-                                            <p className="text-slate-600 text-xs italic">"{req.reason}"</p>
-                                            <p className="text-slate-500 mt-1 text-[11px] font-medium">
+                                            <p className="text-slate-600 dark:text-slate-400 text-xs italic">"{req.reason}"</p>
+                                            <p className="text-slate-500 dark:text-slate-500 mt-1 text-[11px] font-medium">
                                                 {new Date(req.startDate).toLocaleDateString()} to {new Date(req.endDate).toLocaleDateString()}
                                             </p>
                                         </td>
@@ -153,7 +153,7 @@ const TeamRequests = () => {
                                                     <input
                                                         type="text"
                                                         placeholder="Add a note..."
-                                                        className="block w-full px-3 py-1.5 border border-slate-200 rounded-md text-xs focus:ring-1 focus:ring-primary-500 outline-none"
+                                                        className="block w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-md text-xs focus:ring-1 focus:ring-primary-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                                                         value={decisionNote[req._id] || ''}
                                                         onChange={(e) => setDecisionNote({ ...decisionNote, [req._id]: e.target.value })}
                                                     />
