@@ -1,0 +1,158 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Shield, User, UserCheck, Briefcase, Search, AlertCircle } from 'lucide-react';
+
+const AdminPanel = () => {
+    const [users, setUsers] = useState([]);
+    const [managers, setManagers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [error, setError] = useState('');
+
+    const ADMIN_API_URL = `${import.meta.env.VITE_API_BASE_URL}/admin`;
+
+    const fetchData = async () => {
+        try {
+            const res = await axios.get(`${ADMIN_API_URL}/users`, { withCredentials: true });
+            setUsers(res.data);
+            setManagers(res.data.filter(u => u.role === 'Manager' || u.role === 'Admin'));
+        } catch (err) {
+            setError('Failed to fetch user data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handleRoleChange = async (id, newRole) => {
+        try {
+            await axios.patch(`${ADMIN_API_URL}/users/${id}/role`, { role: newRole }, { withCredentials: true });
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to update role');
+        }
+    };
+
+    const handleManagerChange = async (id, newManagerId) => {
+        try {
+            await axios.patch(`${ADMIN_API_URL}/users/${id}/manager`, { managerId: newManagerId }, { withCredentials: true });
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to update manager');
+        }
+    };
+
+
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-3xl font-bold text-slate-900">Admin Panel</h1>
+                <p className="text-slate-500 mt-1">Manage user roles and organizational structure.</p>
+            </div>
+
+            {error && (
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 flex items-center space-x-3 rounded-r-lg shadow-sm">
+                    <AlertCircle className="text-red-500" />
+                    <p className="text-sm text-red-700 font-medium">{error}</p>
+                </div>
+            )}
+
+            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-4">
+                <div className="relative flex-grow max-w-md">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <Search size={18} />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm"
+                    />
+                </div>
+                <div className="hidden lg:flex items-center space-x-6 text-sm text-slate-500">
+                    <div className="flex items-center space-x-1.5"><Shield size={16} /> <span>{users.filter(u => u.role === 'Admin').length} Admins</span></div>
+                    <div className="flex items-center space-x-1.5"><Briefcase size={16} /> <span>{users.filter(u => u.role === 'Manager').length} Managers</span></div>
+                    <div className="flex items-center space-x-1.5"><User size={16} /> <span>{users.filter(u => u.role === 'Employee').length} Employees</span></div>
+                </div>
+            </div>
+
+            {loading ? (
+                <div className="text-center py-20 text-slate-500 font-medium">Loading user management...</div>
+            ) : (
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">User Information</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Role</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Assigned Manager</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-sm">
+                                {filteredUsers.map((user) => (
+                                    <tr key={user._id} className="hover:bg-slate-50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase">
+                                                    {user.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-slate-900">{user.name}</p>
+                                                    <p className="text-slate-500 text-xs">{user.email}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <select
+                                                value={user.role}
+                                                onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                                className={`block w-full max-w-[140px] px-2 py-1.5 border border-slate-200 rounded-lg text-xs font-bold focus:ring-1 focus:ring-primary-500 outline-none
+                          ${user.role === 'Admin' ? 'text-indigo-600 bg-indigo-50 border-indigo-100' :
+                                                        user.role === 'Manager' ? 'text-purple-600 bg-purple-50 border-purple-100' :
+                                                            'text-slate-600 bg-slate-50 border-slate-100'}`}
+                                            >
+                                                <option value="Admin">Admin</option>
+                                                <option value="Manager">Manager</option>
+                                                <option value="Employee">Employee</option>
+                                            </select>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {user.role === 'Admin' ? (
+                                                <span className="text-slate-400 text-xs italic">N/A (Self-Managed)</span>
+                                            ) : (
+                                                <select
+                                                    value={user.managerId?._id || ''}
+                                                    onChange={(e) => handleManagerChange(user._id, e.target.value)}
+                                                    className="block w-full max-w-[200px] px-2 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500 outline-none"
+                                                >
+                                                    <option value="">No Manager</option>
+                                                    {managers.filter(m => m._id !== user._id).map((m) => (
+                                                        <option key={m._id} value={m._id}>
+                                                            {m.name} ({m.role})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default AdminPanel;
