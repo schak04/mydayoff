@@ -41,14 +41,11 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
+userSchema.pre('validate', async function () {
     if (this._password) {
         const salt = await bcrypt.genSalt(10);
         this.passwordHash = await bcrypt.hash(this._password, salt);
     }
-    next();
 });
 
 module.exports = mongoose.model('User', userSchema);
-
-
