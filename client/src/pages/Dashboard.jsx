@@ -28,8 +28,8 @@ const Dashboard = () => {
             }, { pending: 0, approved: 0, rejected: 0, total: 0 });
             setSummary(stats);
 
-            // Fetch team leaves if Manager
-            if (user?.role === 'Manager') {
+            // Fetch team leaves if Manager or Admin
+            if (user?.role === 'Manager' || user?.role === 'Admin') {
                 const teamRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/leaves/team`, { withCredentials: true });
                 const pending = teamRes.data.filter(l => l.status === 'Pending').length;
                 setTeamPendingCount(pending);
@@ -111,19 +111,24 @@ const Dashboard = () => {
                 </div>
             )}
 
-            {user?.role === 'Manager' && teamPendingCount > 0 && (
+            {(user?.role === 'Manager' || user?.role === 'Admin') && teamPendingCount > 0 && (
                 <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-lg font-bold text-primary-900 dark:text-primary-300">Manage Your Team</h3>
+                        <h3 className="text-lg font-bold text-primary-900 dark:text-primary-300">
+                            {user?.role === 'Admin' ? 'Organization Management' : 'Manage Your Team'}
+                        </h3>
                         <p className="text-primary-700 dark:text-primary-400">
-                            You have {teamPendingCount === 1 ? '1 pending leave request' : `${teamPendingCount} pending leave requests`} from your team.
+                            {user?.role === 'Admin'
+                                ? `There are ${teamPendingCount === 1 ? '1 pending leave request' : `${teamPendingCount} pending leave requests`} in the organization.`
+                                : `You have ${teamPendingCount === 1 ? '1 pending leave request' : `${teamPendingCount} pending leave requests`} from your team.`
+                            }
                         </p>
                     </div>
                     <Link
                         to="/team-requests"
                         className="bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-800 hover:bg-primary-50 dark:hover:bg-slate-700 px-5 py-2 rounded-lg font-semibold transition-all"
                     >
-                        Review Team Requests
+                        Review Requests
                     </Link>
                 </div>
             )}

@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
     const navItems = [
         { label: 'Dashboard', icon: <Home size={20} />, path: '/', roles: ['Employee', 'Manager', 'Admin'] },
         { label: 'My Leaves', icon: <Calendar size={20} />, path: '/my-leaves', roles: ['Employee', 'Manager'] },
-        { label: 'Team Requests', icon: <Users size={20} />, path: '/team-requests', roles: ['Manager'] },
+        { label: 'Team Requests', icon: <Users size={20} />, path: '/team-requests', roles: ['Manager', 'Admin'] },
         { label: 'Admin Panel', icon: <Shield size={20} />, path: '/admin', roles: ['Admin'] },
     ];
 

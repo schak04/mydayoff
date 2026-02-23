@@ -4,19 +4,22 @@ import { Search, Filter, Check, X, CheckCircle, XCircle, Clock, AlertCircle } fr
 
 const TeamRequests = () => {
     const [requests, setRequests] = useState([]);
-    const [filteredRequests, setFilteredRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
+    const [error, setError] = useState(null);
     const [decisionNote, setDecisionNote] = useState({});
 
     const fetchRequests = async () => {
         try {
+            setLoading(true);
             const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/leaves/team`, { withCredentials: true });
-            setRequests(res.data);
-            setFilteredRequests(res.data);
+            console.log('Fetched requests:', res.data);
+            setRequests(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
-            // console.error(error);
+            console.error('Fetch error:', error);
+            const msg = error.response?.data?.message || error.message || 'Failed to load requests.';
+            setError(`Error: ${msg}`);
         } finally {
             setLoading(false);
         }
@@ -26,29 +29,25 @@ const TeamRequests = () => {
         fetchRequests();
     }, []);
 
-    // Debounced search logic (300ms)
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            let filtered = requests;
+    const filteredRequests = requests.filter(req => {
+        // Status Filter
+        if (statusFilter !== 'All' && req.status !== statusFilter) return false;
 
-            if (searchTerm) {
-                filtered = filtered.filter(req =>
-                    req.employeeId.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    req.employeeId.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    req.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    req.reason.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-            }
+        // Search Filter
+        if (searchTerm) {
+            const employee = req.employeeId || {};
+            const searchLower = searchTerm.toLowerCase();
+            const matchesSearch =
+                (employee.name || '').toLowerCase().includes(searchLower) ||
+                (employee.email || '').toLowerCase().includes(searchLower) ||
+                (req.type || '').toLowerCase().includes(searchLower) ||
+                (req.reason || '').toLowerCase().includes(searchLower);
 
-            if (statusFilter !== 'All') {
-                filtered = filtered.filter(req => req.status === statusFilter);
-            }
+            if (!matchesSearch) return false;
+        }
 
-            setFilteredRequests(filtered);
-        }, 300);
-
-        return () => clearTimeout(handler);
-    }, [searchTerm, statusFilter, requests]);
+        return true;
+    });
 
     const handleDecision = async (id, action) => {
         try {
@@ -74,8 +73,23 @@ const TeamRequests = () => {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white transition-colors">Team Requests</h1>
-                <p className="text-slate-500 dark:text-slate-400 mt-1 transition-colors">Review and manage leave requests from your team members.</p>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white transition-colors">
+                    Requests Management {requests.length > 0 && <span className="text-sm font-normal text-slate-500">({requests.length} total)</span>}
+                </h1>
+                <p className="text-slate-500 dark:text-slate-400 mt-1 transition-colors">Review and manage leave requests across the organization.</p>
+
+                {error && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 mt-4 flex items-center space-x-3 rounded-r-lg shadow-sm">
+                        <AlertCircle className="text-red-500" />
+                        <p className="text-sm text-red-700 dark:text-red-400 font-medium">{error}</p>
+                    </div>
+                )}
+                {/* Temporary Debug Block */}
+                {requests.length === 0 && !loading && (
+                    <div className="text-[10px] text-slate-400 mt-2 bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                        Debug: State is empty. Contacting API: {import.meta.env.VITE_API_BASE_URL}/leaves/team
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-300">
@@ -128,7 +142,7 @@ const TeamRequests = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
-                                {filteredRequests.map((req) => (
+                                {filteredRequests.filter(req => req.employeeId).map((req) => (
                                     <tr key={req._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <p className="font-bold text-slate-900 dark:text-white">{req.employeeId.name}</p>
@@ -174,7 +188,9 @@ const TeamRequests = () => {
                                                 </div>
                                             ) : (
                                                 <div className="text-xs text-slate-500">
-                                                    <p className="font-medium">Decided at: {new Date(req.decidedAt).toLocaleDateString()}</p>
+                                                    <p className="font-medium">
+                                                        Decided at: {req.decidedAt ? new Date(req.decidedAt).toLocaleDateString() : 'N/A'}
+                                                    </p>
                                                     {req.decisionNote && <p className="italic mt-1">Note: {req.decisionNote}</p>}
                                                 </div>
                                             )}

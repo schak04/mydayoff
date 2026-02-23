@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, User, UserCheck, Briefcase, Search, AlertCircle } from 'lucide-react';
 
@@ -151,6 +152,30 @@ const AdminPanel = () => {
                     </div>
                 </div>
             )}
+            {/* Administrative Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-white shadow-xl shadow-slate-900/20">
+                    <h3 className="text-xl font-bold mb-2">Platform Controls</h3>
+                    <p className="text-slate-400 text-sm mb-6">Manage global user settings, role assignments, and reporting structures.</p>
+                    <div className="flex items-center space-x-3 text-sm font-semibold text-slate-300 bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+                        <UserCheck size={18} className="text-primary-400" />
+                        <span>{users.length} Total Users Registered</span>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Leave Governance</h3>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">You have full authority to override or handle any leave request in the organization.</p>
+                    </div>
+                    <Link
+                        to="/team-requests"
+                        className="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold py-3 rounded-xl text-center transition-all flex items-center justify-center space-x-2"
+                    >
+                        <span>Manage All Leave Requests</span>
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 };

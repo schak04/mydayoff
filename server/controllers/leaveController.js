@@ -81,12 +81,19 @@ const cancelLeave = async (req, res) => {
 
 const getTeamLeaves = async (req, res) => {
     try {
-        // Manager can only view leaves for employees where employee.managerId equals the manager id
-        const teamMembers = await User.find({ managerId: req.user._id });
-        const teamMemberIds = teamMembers.map(member => member._id);
+        let query = {};
+        const isAdmin = req.user && req.user.role === 'Admin';
 
-        const leaves = await Leave.find({ employeeId: { $in: teamMemberIds } })
-            .populate('employeeId', 'name email')
+        if (isAdmin) {
+            query = {}; // Admins get everything
+        } else {
+            const teamMembers = await User.find({ managerId: req.user._id });
+            const teamMemberIds = teamMembers.map(member => member._id);
+            query = { employeeId: { $in: teamMemberIds } };
+        }
+
+        const leaves = await Leave.find(query)
+            .populate('employeeId', 'name email role managerId')
             .sort({ createdAt: -1 });
 
         res.json(leaves);

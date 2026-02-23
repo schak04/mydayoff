@@ -27,7 +27,7 @@ router.get('/my', protect, getMyLeaves);
 
 router.delete('/:id', protect, cancelLeave);
 
-router.get('/team', [protect, authorize('Manager')], getTeamLeaves);
+router.get('/team', [protect, authorize('Manager', 'Admin')], getTeamLeaves);
 
 router.patch('/:id/approve', [protect, authorize('Manager', 'Admin')], approveLeave);
 
