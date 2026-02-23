@@ -12,11 +12,13 @@ const Dashboard = () => {
         rejected: 0,
         total: 0,
     });
+    const [teamPendingCount, setTeamPendingCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [lastRefresh, setLastRefresh] = useState(0);
 
     const fetchLeaves = async () => {
         try {
+            // Fetch personal leaves
             const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/leaves/my`, { withCredentials: true });
             const leaves = res.data;
             const stats = leaves.reduce((acc, leave) => {
@@ -25,6 +27,13 @@ const Dashboard = () => {
                 return acc;
             }, { pending: 0, approved: 0, rejected: 0, total: 0 });
             setSummary(stats);
+
+            // Fetch team leaves if Manager
+            if (user?.role === 'Manager') {
+                const teamRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/leaves/team`, { withCredentials: true });
+                const pending = teamRes.data.filter(l => l.status === 'Pending').length;
+                setTeamPendingCount(pending);
+            }
         } catch (error) {
             // console.error(error);
         } finally {
@@ -61,7 +70,11 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Welcome back, {user?.name}!</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Here's an overview of your leave status.</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">
+                        {user?.role === 'Admin'
+                            ? "System is running smoothly. Use the panel below to manage the platform."
+                            : "Here's an overview of your leave status."}
+                    </p>
                 </div>
                 <div className="flex gap-4">
                     <button
@@ -70,35 +83,41 @@ const Dashboard = () => {
                     >
                         <span>Refresh Analytics</span>
                     </button>
-                    <Link
-                        to="/my-leaves"
-                        className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition-all shadow-lg shadow-primary-500/20"
-                    >
-                        <Plus size={20} />
-                        <span>Apply for Leave</span>
-                    </Link>
+                    {user?.role !== 'Admin' && (
+                        <Link
+                            to="/my-leaves"
+                            className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition-all shadow-lg shadow-primary-500/20"
+                        >
+                            <Plus size={20} />
+                            <span>Apply for Leave</span>
+                        </Link>
+                    )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, index) => (
-                    <div key={index} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center space-x-4">
-                        <div className={`p-3 rounded-xl ${stat.bg} dark:bg-opacity-10`}>
-                            {stat.icon}
+            {user?.role !== 'Admin' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {stats.map((stat, index) => (
+                        <div key={index} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center space-x-4">
+                            <div className={`p-3 rounded-xl ${stat.bg} dark:bg-opacity-10`}>
+                                {stat.icon}
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
+                                <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
-                            <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
-            {user?.role === 'Manager' && (
+            {user?.role === 'Manager' && teamPendingCount > 0 && (
                 <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div>
                         <h3 className="text-lg font-bold text-primary-900 dark:text-primary-300">Manage Your Team</h3>
-                        <p className="text-primary-700 dark:text-primary-400">You have pending leave requests from your team members.</p>
+                        <p className="text-primary-700 dark:text-primary-400">
+                            You have {teamPendingCount === 1 ? '1 pending leave request' : `${teamPendingCount} pending leave requests`} from your team.
+                        </p>
                     </div>
                     <Link
                         to="/team-requests"
