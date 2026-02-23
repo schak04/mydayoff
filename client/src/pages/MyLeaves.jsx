@@ -70,9 +70,9 @@ const MyLeaves = () => {
     const getStatusBadge = (status) => {
         switch (status) {
             case 'Approved':
-                return <span className="flex items-center space-x-1 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><CheckCircle size={14} /> <span>Approved</span></span>;
+                return <span className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><CheckCircle size={14} /> <span>Approved</span></span>;
             case 'Rejected':
-                return <span className="flex items-center space-x-1 text-red-600 bg-red-50 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><XCircle size={14} /> <span>Rejected</span></span>;
+                return <span className="flex items-center space-x-1 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><XCircle size={14} /> <span>Rejected</span></span>;
             default:
                 return <span className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"><Clock size={14} /> <span>Pending</span></span>;
         }
@@ -89,9 +89,9 @@ const MyLeaves = () => {
                         </h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {error && (
-                                <div className="bg-red-50 border-l-4 border-red-500 p-4 flex items-start space-x-3">
+                                <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 flex items-start space-x-3 rounded-r-lg">
                                     <AlertCircle size={18} className="text-red-500 mt-0.5" />
-                                    <p className="text-sm text-red-700">{error}</p>
+                                    <p className="text-sm text-red-700 dark:text-red-400 font-medium">{error}</p>
                                 </div>
                             )}
                             <div className="grid grid-cols-1 gap-4">
@@ -177,7 +177,7 @@ const MyLeaves = () => {
                     {loading ? (
                         <div className="text-center py-10 text-slate-500">Loading leaves...</div>
                     ) : leaves.length === 0 ? (
-                        <div className="bg-white p-10 rounded-2xl border border-dashed border-slate-200 text-center text-slate-500">
+                        <div className="bg-white dark:bg-slate-900 p-10 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-500 dark:text-slate-400 transition-colors duration-300">
                             No leave requests found.
                         </div>
                     ) : (
@@ -194,7 +194,7 @@ const MyLeaves = () => {
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                                         {leaves.map((leave) => (
-                                            <tr key={leave._id} className="hover:bg-slate-50 transition-colors">
+                                            <tr key={leave._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <p className="font-semibold text-slate-900 dark:text-white">{leave.type}</p>
                                                     <p className="text-sm text-slate-500 dark:text-slate-400 truncate max-w-[200px]" title={leave.reason}>{leave.reason}</p>
