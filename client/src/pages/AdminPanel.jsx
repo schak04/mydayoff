@@ -154,10 +154,10 @@ const AdminPanel = () => {
             )}
             {/* Administrative Overview */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-white shadow-xl shadow-slate-900/20">
-                    <h3 className="text-xl font-bold mb-2">Platform Controls</h3>
-                    <p className="text-slate-400 text-sm mb-6">Manage global user settings, role assignments, and reporting structures.</p>
-                    <div className="flex items-center space-x-3 text-sm font-semibold text-slate-300 bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Platform Controls</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Manage global user settings, role assignments, and reporting structures.</p>
+                    <div className="flex items-center space-x-3 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50">
                         <UserCheck size={18} className="text-primary-400" />
                         <span>{users.length} Total Users Registered</span>
                     </div>
