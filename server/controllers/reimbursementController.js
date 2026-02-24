@@ -1,7 +1,7 @@
 const Reimbursement = require('../models/Reimbursement');
 const User = require('../models/User');
 
-// POST /api/reimbursements — Employee submits a claim
+// POST /api/reimbursements - Employee submits a claim
 const submitClaim = async (req, res) => {
     const { category, amount, description, receiptUrl, expenseDate } = req.body;
 
@@ -21,7 +21,7 @@ const submitClaim = async (req, res) => {
     }
 };
 
-// GET /api/reimbursements/my — Employee sees their own claims
+// GET /api/reimbursements/my - Employee sees their own claims
 const getMyClaims = async (req, res) => {
     try {
         const claims = await Reimbursement.find({ employeeId: req.user._id }).sort({ createdAt: -1 });
@@ -31,7 +31,7 @@ const getMyClaims = async (req, res) => {
     }
 };
 
-// DELETE /api/reimbursements/:id — Employee cancels a pending claim
+// DELETE /api/reimbursements/:id - Employee cancels a pending claim
 const cancelClaim = async (req, res) => {
     try {
         const claim = await Reimbursement.findById(req.params.id);
@@ -52,7 +52,7 @@ const cancelClaim = async (req, res) => {
     }
 };
 
-// GET /api/reimbursements/team — Manager/Admin sees team/all claims
+// GET /api/reimbursements/team - Manager/Admin sees team/all claims
 const getTeamClaims = async (req, res) => {
     try {
         let query = {};
@@ -75,7 +75,7 @@ const getTeamClaims = async (req, res) => {
     }
 };
 
-// PATCH /api/reimbursements/:id/approve — Manager/Admin approves a claim
+// PATCH /api/reimbursements/:id/approve - Manager/Admin approves a claim
 const approveClaim = async (req, res) => {
     const { decisionNote } = req.body;
     try {
@@ -106,7 +106,7 @@ const approveClaim = async (req, res) => {
     }
 };
 
-// PATCH /api/reimbursements/:id/reject — Manager/Admin rejects a claim
+// PATCH /api/reimbursements/:id/reject - Manager/Admin rejects a claim
 const rejectClaim = async (req, res) => {
     const { decisionNote } = req.body;
     try {
@@ -137,7 +137,7 @@ const rejectClaim = async (req, res) => {
     }
 };
 
-// PATCH /api/reimbursements/:id/pay — Admin marks an approved claim as Paid
+// PATCH /api/reimbursements/:id/pay - Admin marks an approved claim as Paid
 const markAsPaid = async (req, res) => {
     try {
         const claim = await Reimbursement.findById(req.params.id);
@@ -157,7 +157,7 @@ const markAsPaid = async (req, res) => {
     }
 };
 
-// GET /api/reimbursements/admin/approved-unpaid — Admin sees all approved-but-unpaid claims
+// GET /api/reimbursements/admin/approved-unpaid - Admin sees all approved-but-unpaid claims
 const getApprovedUnpaid = async (req, res) => {
     try {
         const claims = await Reimbursement.find({ status: 'Approved' })

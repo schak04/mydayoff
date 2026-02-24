@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+// import { useAuth } from '../context/AuthContext';
 import { Calendar, Trash2, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 const MyLeaves = () => {
@@ -42,6 +43,7 @@ const MyLeaves = () => {
         setFormLoading(true);
         try {
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/leaves`, formData, { withCredentials: true });
+            toast.success('Leave request submitted!');
             setFormData({
                 startDate: '',
                 endDate: '',
@@ -51,19 +53,33 @@ const MyLeaves = () => {
             });
             fetchLeaves();
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to submit leave request');
+            const msg = err.response?.data?.message || 'Failed to submit leave request';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setFormLoading(false);
         }
     };
 
     const cancelLeave = async (id) => {
-        if (!window.confirm('Are you sure you want to cancel this leave request?')) return;
+        toast((t) => (
+            <span className="flex items-center gap-3">
+                Cancel this leave request?
+                <button onClick={() => { toast.dismiss(t.id); doCancel(id); }}
+                    className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold">Yes</button>
+                <button onClick={() => toast.dismiss(t.id)}
+                    className="bg-slate-200 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold">No</button>
+            </span>
+        ), { duration: 6000 });
+    };
+
+    const doCancel = async (id) => {
         try {
             await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/leaves/${id}`, { withCredentials: true });
+            toast.success('Leave request cancelled.');
             fetchLeaves();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to cancel leave');
+            toast.error(err.response?.data?.message || 'Failed to cancel leave');
         }
     };
 

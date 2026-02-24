@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { Shield, User, UserCheck, Briefcase, Search, AlertCircle, Banknote, CheckCircle } from 'lucide-react';
 
 const formatCurrency = (amount) =>
@@ -49,9 +50,10 @@ const AdminPanel = () => {
         try {
             setPayingId(id);
             await axios.patch(`${CLAIMS_API_URL}/${id}/pay`, {}, { withCredentials: true });
+            toast.success('Claim marked as paid! 💰');
             fetchApprovedClaims();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to mark as paid');
+            toast.error(err.response?.data?.message || 'Failed to mark as paid');
         } finally {
             setPayingId(null);
         }
@@ -65,18 +67,20 @@ const AdminPanel = () => {
     const handleRoleChange = async (id, newRole) => {
         try {
             await axios.patch(`${ADMIN_API_URL}/users/${id}/role`, { role: newRole }, { withCredentials: true });
+            toast.success(`Role updated to ${newRole}.`);
             fetchData();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to update role');
+            toast.error(err.response?.data?.message || 'Failed to update role');
         }
     };
 
     const handleManagerChange = async (id, newManagerId) => {
         try {
             await axios.patch(`${ADMIN_API_URL}/users/${id}/manager`, { managerId: newManagerId }, { withCredentials: true });
+            toast.success('Manager assignment updated.');
             fetchData();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to update manager');
+            toast.error(err.response?.data?.message || 'Failed to update manager');
         }
     };
 

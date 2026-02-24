@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import {
     Search, Filter, Check, X, CheckCircle, XCircle, Clock,
     AlertCircle, Banknote, DollarSign, CalendarDays, Receipt
@@ -71,9 +72,10 @@ const TeamRequests = () => {
         try {
             const note = decisionNote[id] || '';
             await axios.patch(`${LEAVES_API}/${id}/${action}`, { decisionNote: note }, { withCredentials: true });
+            toast.success(`Leave ${action}d successfully.`);
             fetchLeaves();
         } catch (err) {
-            alert(err.response?.data?.message || `Failed to ${action} leave`);
+            toast.error(err.response?.data?.message || `Failed to ${action} leave`);
         }
     };
 
@@ -82,9 +84,10 @@ const TeamRequests = () => {
         try {
             const note = claimNote[id] || '';
             await axios.patch(`${CLAIMS_API}/${id}/${action}`, { decisionNote: note }, { withCredentials: true });
+            toast.success(`Claim ${action}d successfully.`);
             fetchClaims();
         } catch (err) {
-            alert(err.response?.data?.message || `Failed to ${action} claim`);
+            toast.error(err.response?.data?.message || `Failed to ${action} claim`);
         }
     };
 

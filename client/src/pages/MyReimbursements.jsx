@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import {
     DollarSign, Plus, Clock, CheckCircle, XCircle, Banknote,
     AlertCircle, ChevronDown, ChevronUp, Trash2, Receipt
@@ -69,24 +70,39 @@ const MyReimbursements = () => {
         try {
             setSubmitting(true);
             await axios.post(API, { ...form, amount: parseFloat(form.amount) }, { withCredentials: true });
+            toast.success('Claim submitted successfully!');
             setSuccess('Claim submitted successfully!');
             setShowForm(false);
             setForm({ category: 'Medical', amount: '', description: '', receiptUrl: '', expenseDate: new Date().toISOString().split('T')[0] });
             fetchClaims();
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to submit claim.');
+            const msg = err.response?.data?.message || 'Failed to submit claim.';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setSubmitting(false);
         }
     };
 
     const handleCancel = async (id) => {
-        if (!window.confirm('Cancel this reimbursement claim?')) return;
+        toast((t) => (
+            <span className="flex items-center gap-3">
+                Cancel this claim?
+                <button onClick={() => { toast.dismiss(t.id); doCancel(id); }}
+                    className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold">Yes</button>
+                <button onClick={() => toast.dismiss(t.id)}
+                    className="bg-slate-200 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold">No</button>
+            </span>
+        ), { duration: 6000 });
+    };
+
+    const doCancel = async (id) => {
         try {
             await axios.delete(`${API}/${id}`, { withCredentials: true });
+            toast.success('Claim cancelled.');
             fetchClaims();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to cancel claim.');
+            toast.error(err.response?.data?.message || 'Failed to cancel claim.');
         }
     };
 
@@ -344,7 +360,7 @@ const MyReimbursements = () => {
                                                         <span>Cancel</span>
                                                     </button>
                                                 ) : (
-                                                    <span className="text-slate-400 text-xs italic">—</span>
+                                                    <span className="text-slate-400 text-xs italic">-</span>
                                                 )}
                                             </td>
                                         </tr>
