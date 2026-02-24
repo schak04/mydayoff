@@ -1,6 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Home, Calendar, Users, Shield, Menu, X, Sun, Moon } from 'lucide-react';
+import { LogOut, Home, Calendar, Users, Shield, Menu, X, Sun, Moon, Wallet } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Layout = ({ children }) => {
@@ -33,6 +33,7 @@ const Layout = ({ children }) => {
     const navItems = [
         { label: 'Dashboard', icon: <Home size={20} />, path: '/', roles: ['Employee', 'Manager', 'Admin'] },
         { label: 'My Leaves', icon: <Calendar size={20} />, path: '/my-leaves', roles: ['Employee', 'Manager'] },
+        { label: 'My Claims', icon: <Wallet size={20} />, path: '/my-reimbursements', roles: ['Employee', 'Manager'] },
         { label: 'Team Requests', icon: <Users size={20} />, path: '/team-requests', roles: ['Manager', 'Admin'] },
         { label: 'Admin Panel', icon: <Shield size={20} />, path: '/admin', roles: ['Admin'] },
     ];

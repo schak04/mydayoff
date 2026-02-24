@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Shield, User, UserCheck, Briefcase, Search, AlertCircle } from 'lucide-react';
+import { Shield, User, UserCheck, Briefcase, Search, AlertCircle, Banknote, CheckCircle } from 'lucide-react';
+
+const formatCurrency = (amount) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
 
 const AdminPanel = () => {
     const [users, setUsers] = useState([]);
@@ -10,7 +13,13 @@ const AdminPanel = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState('');
 
+    // Reimbursement payouts
+    const [approvedClaims, setApprovedClaims] = useState([]);
+    const [loadingClaims, setLoadingClaims] = useState(true);
+    const [payingId, setPayingId] = useState(null);
+
     const ADMIN_API_URL = `${import.meta.env.VITE_API_BASE_URL}/admin`;
+    const CLAIMS_API_URL = `${import.meta.env.VITE_API_BASE_URL}/reimbursements`;
 
     const fetchData = async () => {
         try {
@@ -24,8 +33,33 @@ const AdminPanel = () => {
         }
     };
 
+    const fetchApprovedClaims = async () => {
+        try {
+            setLoadingClaims(true);
+            const res = await axios.get(`${CLAIMS_API_URL}/admin/approved-unpaid`, { withCredentials: true });
+            setApprovedClaims(Array.isArray(res.data) ? res.data : []);
+        } catch {
+            // silently fail
+        } finally {
+            setLoadingClaims(false);
+        }
+    };
+
+    const handleMarkPaid = async (id) => {
+        try {
+            setPayingId(id);
+            await axios.patch(`${CLAIMS_API_URL}/${id}/pay`, {}, { withCredentials: true });
+            fetchApprovedClaims();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to mark as paid');
+        } finally {
+            setPayingId(null);
+        }
+    };
+
     useEffect(() => {
         fetchData();
+        fetchApprovedClaims();
     }, []);
 
     const handleRoleChange = async (id, newRole) => {
@@ -175,6 +209,82 @@ const AdminPanel = () => {
                         <span>Manage All Leave Requests</span>
                     </Link>
                 </div>
+            </div>
+
+            {/* ── Reimbursement Payouts ── */}
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Reimbursement Payouts</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Approved claims awaiting payment processing.</p>
+                    </div>
+                    {approvedClaims.length > 0 && (
+                        <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-bold px-3 py-1 rounded-full">
+                            {approvedClaims.length} pending payout{approvedClaims.length > 1 ? 's' : ''}
+                        </span>
+                    )}
+                </div>
+
+                {loadingClaims ? (
+                    <div className="text-center py-12 text-slate-500">Loading payout queue...</div>
+                ) : approvedClaims.length === 0 ? (
+                    <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-10 text-center">
+                        <CheckCircle size={36} className="mx-auto text-emerald-400 mb-3" />
+                        <p className="text-slate-600 dark:text-slate-400 font-semibold">All caught up!</p>
+                        <p className="text-slate-400 dark:text-slate-500 text-sm">No approved claims are pending payment.</p>
+                    </div>
+                ) : (
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                                    <tr>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Employee</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Description</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Approved By</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                                    {approvedClaims.map(claim => (
+                                        <tr key={claim._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <p className="font-bold text-slate-900 dark:text-white">{claim.employeeId?.name}</p>
+                                                <p className="text-slate-500 dark:text-slate-400 text-xs">{claim.employeeId?.email}</p>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full">{claim.category}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <p className="text-slate-700 dark:text-slate-300 max-w-xs truncate text-xs">{claim.description}</p>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="font-bold text-slate-900 dark:text-white text-base">{formatCurrency(claim.amount)}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <p className="text-slate-600 dark:text-slate-400 text-xs">{claim.decidedBy?.name || 'N/A'}</p>
+                                                <p className="text-slate-400 text-[10px]">{claim.decidedAt ? new Date(claim.decidedAt).toLocaleDateString('en-IN') : ''}</p>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    id={`pay-btn-${claim._id}`}
+                                                    onClick={() => handleMarkPaid(claim._id)}
+                                                    disabled={payingId === claim._id}
+                                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white px-4 py-1.5 rounded-lg font-bold text-xs flex items-center space-x-1.5 transition-all"
+                                                >
+                                                    <Banknote size={14} />
+                                                    <span>{payingId === claim._id ? 'Processing...' : 'Mark as Paid'}</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

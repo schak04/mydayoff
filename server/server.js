@@ -56,6 +56,7 @@ app.use(cors({
 app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/leaves', require('./routes/leaveRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/reimbursements', require('./routes/reimbursementRoutes'));
 
 // Root endpoint
 app.get('/', (req, res) => {

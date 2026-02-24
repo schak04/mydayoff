@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import MyLeaves from './pages/MyLeaves';
+import MyReimbursements from './pages/MyReimbursements';
 import TeamRequests from './pages/TeamRequests';
 import AdminPanel from './pages/AdminPanel';
 
@@ -55,6 +56,14 @@ function App() {
                         <ProtectedRoute>
                             <Layout>
                                 <MyLeaves />
+                            </Layout>
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/my-reimbursements" element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <MyReimbursements />
                             </Layout>
                         </ProtectedRoute>
                     } />
