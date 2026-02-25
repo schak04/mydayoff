@@ -1,6 +1,6 @@
 # MyDayOff - Employee Leave & Reimbursement Management System
 
-This project is a full-stack HR workflow simulation for managing employee leave and reimbursement requests and approvals.
+This project is a full-stack HR workflow simulation for managing employee (and manager) leave and reimbursement requests and approvals.
 
 ## Tech Stack
 - **Backend**: Node.js, Express.js 
