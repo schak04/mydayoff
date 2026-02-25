@@ -25,7 +25,9 @@
         "hpp": "^0.2.3",
         "jsonwebtoken": "^9.0.3",
         "mongo-sanitize": "^1.1.0",
-        "mongoose": "^9.2.1",
+        "mongoose": "^9.2.1"
+    },
+    "devDependencies": {
         "nodemon": "^3.1.14"
     }
 }
