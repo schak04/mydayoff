@@ -16,6 +16,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for cookies over HTTPS (required for Render)
+app.set('trust proxy', 1);
+
 // Security Headers
 app.use(helmet());
 
