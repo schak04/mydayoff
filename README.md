@@ -19,7 +19,6 @@ This project is a full-stack HR workflow simulation for managing employee (and m
 ## Project Structure
 - `client/`: React frontend with Tailwind CSS.
 - `server/`: Express backend with MongoDB models.
-- `docs/`: System design and presentation notes.
 
 ---
 
