@@ -4,7 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-// const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const connectDB = require('./config/db');
 
@@ -22,8 +22,6 @@ app.set('trust proxy', 1);
 // Security Headers
 app.use(helmet());
 
-// NoSQL Injection Protection
-// app.use(mongoSanitize());
 
 // HTTP Parameter Pollution Protection
 app.use(hpp());
@@ -31,6 +29,9 @@ app.use(hpp());
 // Body parser
 app.use(express.json());
 app.use(cookieParser());
+
+// NoSQL Injection Protection
+app.use(mongoSanitize());
 
 // Rate limiting
 const authLimiter = rateLimit({
